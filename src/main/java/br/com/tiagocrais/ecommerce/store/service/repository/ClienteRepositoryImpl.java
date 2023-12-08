@@ -58,12 +58,12 @@ public class ClienteRepositoryImpl implements IClienteRepository {
         query.setParameter("p_genero", genero);
         query.setParameter("p_senha", senha);
         query.setParameter("p_rua", rua);
-        query.setParameter("p_numero", nome);
-        query.setParameter("p_complemento", nome);
-        query.setParameter("p_bairro", nome);
-        query.setParameter("p_cidade", nome);
-        query.setParameter("p_uf", nome);
-        query.setParameter("p_cep", nome);
+        query.setParameter("p_numero", numero);
+        query.setParameter("p_complemento", complemento);
+        query.setParameter("p_bairro", bairro);
+        query.setParameter("p_cidade", cidade);
+        query.setParameter("p_uf", uf);
+        query.setParameter("p_cep", cep);
 
         query.execute();
     }
