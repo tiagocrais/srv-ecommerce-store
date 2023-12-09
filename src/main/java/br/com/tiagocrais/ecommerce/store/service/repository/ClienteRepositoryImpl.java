@@ -1,15 +1,23 @@
 package br.com.tiagocrais.ecommerce.store.service.repository;
 
+import br.com.tiagocrais.ecommerce.store.service.model.response.dto.DadosClienteDto;
+import br.com.tiagocrais.ecommerce.store.service.usecase.ClienteUseCase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import javax.persistence.EntityManager;
 import javax.persistence.ParameterMode;
 import javax.persistence.StoredProcedureQuery;
 import java.time.LocalDate;
+import java.util.List;
+import java.util.Optional;
 
 @Repository
 public class ClienteRepositoryImpl implements IClienteRepository {
     private final EntityManager entityManager;
+
+    private static final Logger logger = LoggerFactory.getLogger(ClienteUseCase.class);
 
     @Autowired
     public ClienteRepositoryImpl(EntityManager entityManager) {
@@ -17,7 +25,7 @@ public class ClienteRepositoryImpl implements IClienteRepository {
     }
 
     @Override
-    public void inserirClienteEndereco(
+    public DadosClienteDto inserirClienteEndereco(
             String nome,
             String cpfCnpj,
             String email,
@@ -33,6 +41,7 @@ public class ClienteRepositoryImpl implements IClienteRepository {
             String uf,
             String cep
     ) {
+        logger.info("Iniciando chamada da procedure inserir_cliente_endereco para cadastrar o cliente");
         StoredProcedureQuery query = entityManager.createStoredProcedureQuery("inserir_cliente_endereco");
 
         query.registerStoredProcedureParameter("p_nome", String.class, ParameterMode.IN);
@@ -66,5 +75,82 @@ public class ClienteRepositoryImpl implements IClienteRepository {
         query.setParameter("p_cep", cep);
 
         query.execute();
+
+        List<DadosClienteDto> resultadoConsulta = consultarClienteEndereco(cpfCnpj, email);
+        return resultadoConsulta.isEmpty() ? null : resultadoConsulta.get(0);
+    }
+
+    public List<DadosClienteDto> consultarClienteEndereco(String cpfCnpj, String email) {
+
+        logger.info("Iniciando chamada da procedure consultar_cliente_endereco para consultar os dados cadastrados");
+        StoredProcedureQuery query = entityManager.createStoredProcedureQuery("consultar_cliente_endereco", DadosClienteDto.class);
+
+        query.registerStoredProcedureParameter("p_cpf_cnpj", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_email", String.class, ParameterMode.IN);
+
+        query.setParameter("p_cpf_cnpj", cpfCnpj);
+        query.setParameter("p_email", email);
+
+        return query.getResultList();
+    }
+
+    @Override
+    public <S extends DadosClienteDto> S save(S entity) {
+        throw new UnsupportedOperationException("Método save não é suportado nesta implementação.");
+    }
+
+    @Override
+    public <S extends DadosClienteDto> Iterable<S> saveAll(Iterable<S> entities) {
+        throw new UnsupportedOperationException("Método saveAll não é suportado nesta implementação.");
+    }
+
+    @Override
+    public Optional<DadosClienteDto> findById(Integer integer) {
+        return Optional.empty();
+    }
+
+    @Override
+    public boolean existsById(Integer integer) {
+        return false;
+    }
+
+    @Override
+    public Iterable<DadosClienteDto> findAll() {
+        return null;
+    }
+
+    @Override
+    public Iterable<DadosClienteDto> findAllById(Iterable<Integer> integers) {
+        return null;
+    }
+
+    @Override
+    public long count() {
+        return 0;
+    }
+
+    @Override
+    public void deleteById(Integer integer) {
+
+    }
+
+    @Override
+    public void delete(DadosClienteDto entity) {
+
+    }
+
+    @Override
+    public void deleteAllById(Iterable<? extends Integer> integers) {
+
+    }
+
+    @Override
+    public void deleteAll(Iterable<? extends DadosClienteDto> entities) {
+
+    }
+
+    @Override
+    public void deleteAll() {
+
     }
 }

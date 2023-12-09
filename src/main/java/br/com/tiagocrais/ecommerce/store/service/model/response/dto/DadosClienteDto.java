@@ -38,4 +38,6 @@ public class DadosClienteDto {
     private String uf;
 
     private String cep;
+
+    private Integer id;
 }

@@ -22,7 +22,8 @@ public class ClienteUseCase {
 
     public DadosClienteDto cadastrarCliente(DadosCliente dadosClienteRequest) {
 
-        iClienteRepository.inserirClienteEndereco(
+        logger.info("Iniciando comunicação com a camada de repository para cadastro do cliente");
+        DadosClienteDto response = iClienteRepository.inserirClienteEndereco(
                 dadosClienteRequest.getNome(),
                 dadosClienteRequest.getCpfCnpj(),
                 dadosClienteRequest.getEmail(),
@@ -38,6 +39,7 @@ public class ClienteUseCase {
                 dadosClienteRequest.getUf(),
                 dadosClienteRequest.getCep()
         );
-        return null;
+        logger.info("Retorno da base de dados com o response: {}", response);
+        return response;
     }
 }
