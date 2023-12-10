@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -27,10 +28,10 @@ public class ClienteUseCase {
 
     private static final Logger logger = LoggerFactory.getLogger(ClienteUseCase.class);
 
-    public DadosClienteDto cadastrarCliente(DadosCliente dadosClienteRequest) {
+    public ResponseEntity<?> cadastrarCliente(DadosCliente dadosClienteRequest) {
 
         logger.info("Iniciando comunicação com a camada de repository para cadastro do cliente");
-        DadosClienteDto response = clienteRepositoryImpl.inserirClienteEndereco(
+        ResponseEntity<?> response = clienteRepositoryImpl.inserirClienteEndereco(
                 dadosClienteRequest.getNome(),
                 dadosClienteRequest.getCpfCnpj(),
                 dadosClienteRequest.getEmail(),
