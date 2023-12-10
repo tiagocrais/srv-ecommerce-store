@@ -2,6 +2,7 @@ package br.com.tiagocrais.ecommerce.store.service.usecase;
 
 import br.com.tiagocrais.ecommerce.store.service.model.request.DadosCliente;
 import br.com.tiagocrais.ecommerce.store.service.model.response.dto.DadosClienteDto;
+import br.com.tiagocrais.ecommerce.store.service.repository.ClienteRepositoryImpl;
 import br.com.tiagocrais.ecommerce.store.service.repository.IClienteRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -16,8 +17,12 @@ public class ClienteUseCase {
     private final IClienteRepository iClienteRepository;
 
     @Autowired
-    public ClienteUseCase(@Qualifier("clienteRepositoryImpl") IClienteRepository iClienteRepository) {
+    private final ClienteRepositoryImpl clienteRepositoryImpl;
+
+    @Autowired
+    public ClienteUseCase(@Qualifier("clienteRepositoryImpl") IClienteRepository iClienteRepository, ClienteRepositoryImpl clienteRepositoryImpl) {
         this.iClienteRepository = iClienteRepository;
+        this.clienteRepositoryImpl = clienteRepositoryImpl;
     }
 
     private static final Logger logger = LoggerFactory.getLogger(ClienteUseCase.class);
@@ -25,7 +30,7 @@ public class ClienteUseCase {
     public DadosClienteDto cadastrarCliente(DadosCliente dadosClienteRequest) {
 
         logger.info("Iniciando comunicação com a camada de repository para cadastro do cliente");
-        DadosClienteDto response = iClienteRepository.inserirClienteEndereco(
+        DadosClienteDto response = clienteRepositoryImpl.inserirClienteEndereco(
                 dadosClienteRequest.getNome(),
                 dadosClienteRequest.getCpfCnpj(),
                 dadosClienteRequest.getEmail(),

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import java.time.LocalDate;
@@ -18,12 +19,14 @@ public class DadosClienteDto {
 
     private String nome;
 
+    @Column(name = "cpf_cnpj")
     private String cpfCnpj;
 
     private String email;
 
     private String telefone;
 
+    @Column(name = "data_nascimento")
     private LocalDate dataNascimento;
 
     private String genero;
