@@ -47,7 +47,16 @@ public class ClienteUseCase {
                 dadosClienteRequest.getUf(),
                 dadosClienteRequest.getCep()
         );
+
         logger.info("Retorno da base de dados com o response: {}", response);
-        return response;
+
+        // Verifica se a resposta foi bem-sucedida e se tem um corpo
+        if (response.getStatusCode().is2xxSuccessful() && response.getBody() instanceof DadosClienteDto) {
+            // Retorna o corpo da resposta encapsulado em um novo ResponseEntity
+            return ResponseEntity.status(response.getStatusCode()).body(response.getBody());
+        } else {
+            // Caso contrário, retorna a resposta original do use case
+            return response;
+        }
     }
 }

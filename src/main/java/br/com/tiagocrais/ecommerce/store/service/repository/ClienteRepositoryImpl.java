@@ -4,11 +4,9 @@ import br.com.tiagocrais.ecommerce.store.service.model.response.dto.DadosCliente
 import br.com.tiagocrais.ecommerce.store.service.model.response.dto.ErrorResponseDto;
 import br.com.tiagocrais.ecommerce.store.service.usecase.ClienteUseCase;
 import br.com.tiagocrais.ecommerce.store.service.utils.Conversoes;
-import org.hibernate.exception.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
