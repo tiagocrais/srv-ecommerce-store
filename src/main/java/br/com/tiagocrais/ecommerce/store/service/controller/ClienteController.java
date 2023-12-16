@@ -25,4 +25,15 @@ public class ClienteController {
 
         return  clienteCadastrado;
     }
+
+    @GetMapping("/login")
+    public ResponseEntity<?> validaLogin(
+            @RequestHeader(name = "cpfCnpjOrEmail") String cpfCnpjOrEmail,
+            @RequestHeader(name = "senha") String senha) {
+
+        logger.info("Recebendo requisição contendo os dados de login - user: {}, senha: {}",
+                cpfCnpjOrEmail, senha);
+        ResponseEntity<?> login = clienteUseCase.validaLogin(cpfCnpjOrEmail, senha);
+        return login;
+    }
 }
