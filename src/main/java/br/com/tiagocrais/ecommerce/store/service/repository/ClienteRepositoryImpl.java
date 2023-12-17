@@ -4,16 +4,15 @@ import br.com.tiagocrais.ecommerce.store.service.model.response.dto.DadosCliente
 import br.com.tiagocrais.ecommerce.store.service.model.response.dto.ErrorResponseDto;
 import br.com.tiagocrais.ecommerce.store.service.usecase.ClienteUseCase;
 import br.com.tiagocrais.ecommerce.store.service.utils.Conversoes;
+import br.com.tiagocrais.ecommerce.store.service.utils.ValidaTipoUsuario;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
-import javax.persistence.EntityManager;
-import javax.persistence.ParameterMode;
-import javax.persistence.StoredProcedureQuery;
-import javax.persistence.TemporalType;
+
+import javax.persistence.*;
 import java.sql.SQLIntegrityConstraintViolationException;
 import java.time.LocalDate;
 import java.util.List;
@@ -24,6 +23,9 @@ public class ClienteRepositoryImpl implements IClienteRepository {
 
     @Autowired
     Conversoes conversao;
+
+    @Autowired
+    ValidaTipoUsuario validaTipoUsuario;
 
     private final EntityManager entityManager;
 
@@ -126,6 +128,51 @@ public class ClienteRepositoryImpl implements IClienteRepository {
         query.setParameter("p_email", email);
 
         return query.getResultList();
+    }
+
+    @Override
+    public ResponseEntity<?> validaLogin(String cpfCnpjOrEmail, String senha) {
+
+        if (validaTipoUsuario.isEmail(cpfCnpjOrEmail)) {
+            logger.info("Iniciando chamada da procedure valida_login_email para validar usuário" +
+                    " e retornar os dados cadastrados");
+            StoredProcedureQuery query = entityManager.createStoredProcedureQuery(
+                    "valida_login_email", DadosClienteDto.class);
+
+            query.registerStoredProcedureParameter("p_email", String.class, ParameterMode.IN);
+            query.registerStoredProcedureParameter("p_senha", String.class, ParameterMode.IN);
+
+            query.setParameter("p_email", cpfCnpjOrEmail);
+            query.setParameter("p_senha", senha);
+
+            List<DadosClienteDto> resultadoLogin = query.getResultList();
+            DadosClienteDto clienteCadastrado = resultadoLogin.isEmpty() ? null : resultadoLogin.get(0);
+
+            if (clienteCadastrado != null) {
+                return ResponseEntity.ok(clienteCadastrado);
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Senha incorreta");
+            }
+        }
+        logger.info("Iniciando chamada da procedure valida_login_cpf_cnpj para validar usuário" +
+                " e retornar os dados cadastrados");
+        StoredProcedureQuery query = entityManager.createStoredProcedureQuery(
+                "valida_login_cpf_cnpj", DadosClienteDto.class);
+
+        query.registerStoredProcedureParameter("p_cpf_cnpj", String.class, ParameterMode.IN);
+        query.registerStoredProcedureParameter("p_senha", String.class, ParameterMode.IN);
+
+        query.setParameter("p_cpf_cnpj", cpfCnpjOrEmail);
+        query.setParameter("p_senha", senha);
+
+        List<DadosClienteDto> resultadoLogin = query.getResultList();
+        DadosClienteDto clienteCadastrado = resultadoLogin.isEmpty() ? null : resultadoLogin.get(0);
+
+        if (clienteCadastrado != null) {
+            return ResponseEntity.ok(clienteCadastrado);
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Senha incorreta");
+        }
     }
 
     @Override

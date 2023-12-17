@@ -4,6 +4,7 @@ import br.com.tiagocrais.ecommerce.store.service.model.response.dto.DadosCliente
 import org.springframework.data.jpa.repository.query.Procedure;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
@@ -13,4 +14,9 @@ public interface IClienteRepository extends CrudRepository<DadosClienteDto, Inte
 
     @Procedure
     List<DadosClienteDto> consultarClienteEndereco(@Param("cpfCnpj") String cpfCnpj, @Param("email") String email);
+
+    @Procedure
+    ResponseEntity<?> validaLogin(
+            @Param("cpfCnpjOrEmail") String cpfCnpjOrEmail,
+            @Param("senha") String senha);
 }
