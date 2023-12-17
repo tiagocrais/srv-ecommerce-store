@@ -81,7 +81,8 @@ public class ClienteUseCase {
             logger.info("Retorno com a validação do login: {}", response);
             return response;
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("usuário ou email não cadastrados");
+        logger.info("Cpf/cnpj ou email não cadastrados");
+        return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cpf/cnpj ou email não cadastrados");
     }
 
     public boolean verificarExistenciaCpfCnpjEmail(String cpfCnpjOrEmail) {

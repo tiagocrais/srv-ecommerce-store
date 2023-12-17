@@ -151,7 +151,7 @@ public class ClienteRepositoryImpl implements IClienteRepository {
             if (clienteCadastrado != null) {
                 return ResponseEntity.ok(clienteCadastrado);
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário ou senha incorretos");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Senha incorreta");
             }
         }
         logger.info("Iniciando chamada da procedure valida_login_cpf_cnpj para validar usuário" +
@@ -171,7 +171,7 @@ public class ClienteRepositoryImpl implements IClienteRepository {
         if (clienteCadastrado != null) {
             return ResponseEntity.ok(clienteCadastrado);
         } else {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Usuário ou senha incorretos");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Senha incorreta");
         }
     }
 

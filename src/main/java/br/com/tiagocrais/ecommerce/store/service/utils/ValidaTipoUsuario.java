@@ -8,8 +8,6 @@ import org.springframework.stereotype.Service;
 @Service
 public class ValidaTipoUsuario {
 
-    private static final Logger logger = LoggerFactory.getLogger(ClienteUseCase.class);
-
     public boolean isEmail (String tipoUsuario) {
 
         if (tipoUsuario.contains("@")) {
