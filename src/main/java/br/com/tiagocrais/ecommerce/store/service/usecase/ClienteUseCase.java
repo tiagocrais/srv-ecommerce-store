@@ -85,7 +85,37 @@ public class ClienteUseCase {
         return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cpf/cnpj ou email não cadastrados");
     }
 
+    public ResponseEntity<?> alteraSenha(String cpfCnpjOrEmail, String novaSenha) {
+
+        if (!verificarExistenciaNovaSenha(cpfCnpjOrEmail, novaSenha)) {
+            if (verificarExistenciaCpfCnpjEmail(cpfCnpjOrEmail)) {
+                logger.info("Iniciando comunicação com a camada de repository para atualização da senha");
+                if (atualizaSenha(cpfCnpjOrEmail, novaSenha)) {
+                    logger.info("Senha alterada com sucesso");
+                    return ResponseEntity.status(HttpStatus.OK).body("Senha alterada com sucesso");
+                }
+                logger.info("A senha não foi alterada");
+                return ResponseEntity.status(HttpStatus.NOT_MODIFIED).body("A senha não foi alterada");
+            }
+            logger.info("Cpf/cnpj ou email não cadastrados");
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Cpf/cnpj ou email não cadastrados");
+        }
+        logger.info("Senha atual já cadastrada. Por favor insira uma nova");
+        return ResponseEntity.status(HttpStatus.IM_USED).body("Senha atual já cadastrada. Por favor insira uma nova");
+    }
+
     public boolean verificarExistenciaCpfCnpjEmail(String cpfCnpjOrEmail) {
         return clienteQueryRepository.countByCpfCnpjOrEmail(cpfCnpjOrEmail) > 0;
+    }
+
+    public boolean verificarExistenciaNovaSenha(String cpfCnpjOrEmail, String novaSenha) {
+        return clienteQueryRepository.countByNovaSenhaExists(cpfCnpjOrEmail, novaSenha) > 0;
+    }
+
+    public boolean atualizaSenha(String cpfCnpjOrEmail, String novaSenha) {
+        int quantidadeAtualizada = clienteQueryRepository.atualizarSenhaPorCpfCnpjOrEmail(
+                cpfCnpjOrEmail, novaSenha);
+
+        return quantidadeAtualizada > 0 ? true : false;
     }
 }

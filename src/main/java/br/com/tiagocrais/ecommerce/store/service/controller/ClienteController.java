@@ -36,4 +36,15 @@ public class ClienteController {
         ResponseEntity<?> login = clienteUseCase.validaLogin(cpfCnpjOrEmail, senha);
         return login;
     }
+
+    @PutMapping("/altera-senha")
+    public ResponseEntity<?> alteraSenha(
+            @RequestHeader(name = "cpfCnpjOrEmail") String cpfCnpjOrEmail,
+            @RequestHeader(name = "novaSenha") String novaSenha) {
+
+        logger.info("Recebendo requisição contendo os dados de login - user: {}, novaSenha: {}",
+                cpfCnpjOrEmail, novaSenha);
+        ResponseEntity<?> response = clienteUseCase.alteraSenha(cpfCnpjOrEmail, novaSenha);
+        return response;
+    }
 }
