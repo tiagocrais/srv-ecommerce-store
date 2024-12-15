@@ -41,22 +41,7 @@ public class ClienteUseCase {
     public ResponseEntity<?> cadastrarCliente(DadosCliente dadosClienteRequest) {
 
         logger.info("Iniciando comunicação com a camada de repository para cadastro do cliente");
-        ResponseEntity<?> response = clienteRepositoryImpl.inserirClienteEndereco(
-                dadosClienteRequest.getNome(),
-                dadosClienteRequest.getCpfCnpj(),
-                dadosClienteRequest.getEmail(),
-                dadosClienteRequest.getTelefone(),
-                dadosClienteRequest.getDataNascimento(),
-                dadosClienteRequest.getGenero(),
-                dadosClienteRequest.getSenha(),
-                dadosClienteRequest.getRua(),
-                dadosClienteRequest.getNumero(),
-                dadosClienteRequest.getComplemento(),
-                dadosClienteRequest.getBairro(),
-                dadosClienteRequest.getCidade(),
-                dadosClienteRequest.getUf(),
-                dadosClienteRequest.getCep()
-        );
+        ResponseEntity<?> response = clienteRepositoryImpl.inserirClienteEndereco(dadosClienteRequest);
 
         logger.info("Retorno da base de dados com o response: {}", response);
 

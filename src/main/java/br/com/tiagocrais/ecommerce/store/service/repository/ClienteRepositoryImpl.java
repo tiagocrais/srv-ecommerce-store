@@ -1,5 +1,6 @@
 package br.com.tiagocrais.ecommerce.store.service.repository;
 
+import br.com.tiagocrais.ecommerce.store.service.model.request.DadosCliente;
 import br.com.tiagocrais.ecommerce.store.service.model.response.dto.DadosClienteDto;
 import br.com.tiagocrais.ecommerce.store.service.model.response.dto.ErrorResponseDto;
 import br.com.tiagocrais.ecommerce.store.service.usecase.ClienteUseCase;
@@ -14,7 +15,6 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
 import java.sql.SQLIntegrityConstraintViolationException;
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -36,22 +36,7 @@ public class ClienteRepositoryImpl implements IClienteRepository {
         this.entityManager = entityManager;
     }
 
-    public ResponseEntity<?> inserirClienteEndereco(
-            String nome,
-            String cpfCnpj,
-            String email,
-            String telefone,
-            LocalDate dataNascimento,
-            String genero,
-            String senha,
-            String rua,
-            Integer numero,
-            String complemento,
-            String bairro,
-            String cidade,
-            String uf,
-            String cep
-    ) {
+    public ResponseEntity<?> inserirClienteEndereco(DadosCliente dadosCliente) {
         try {
             logger.info("Iniciando chamada da procedure inserir_cliente_endereco para cadastrar o cliente");
             StoredProcedureQuery query = entityManager.createStoredProcedureQuery("inserir_cliente_endereco");
@@ -71,24 +56,27 @@ public class ClienteRepositoryImpl implements IClienteRepository {
             query.registerStoredProcedureParameter("p_uf", String.class, ParameterMode.IN);
             query.registerStoredProcedureParameter("p_cep", String.class, ParameterMode.IN);
 
-            query.setParameter("p_nome", nome);
-            query.setParameter("p_cpf_cnpj", cpfCnpj);
-            query.setParameter("p_email", email);
-            query.setParameter("p_telefone", telefone);
-            query.setParameter("p_data_nascimento", conversao.converteParaDate(dataNascimento), TemporalType.DATE);
-            query.setParameter("p_genero", genero);
-            query.setParameter("p_senha", senha);
-            query.setParameter("p_rua", rua);
-            query.setParameter("p_numero", numero);
-            query.setParameter("p_complemento", complemento);
-            query.setParameter("p_bairro", bairro);
-            query.setParameter("p_cidade", cidade);
-            query.setParameter("p_uf", uf);
-            query.setParameter("p_cep", cep);
+            query.setParameter("p_nome", dadosCliente.getNome());
+            query.setParameter("p_cpf_cnpj", dadosCliente.getCpfCnpj());
+            query.setParameter("p_email", dadosCliente.getEmail());
+            query.setParameter("p_telefone", dadosCliente.getTelefone());
+            query.setParameter("p_data_nascimento", conversao.converteParaDate(dadosCliente.getDataNascimento()), TemporalType.DATE);
+            query.setParameter("p_genero", dadosCliente.getGenero());
+            query.setParameter("p_senha", dadosCliente.getSenha());
+            query.setParameter("p_rua", dadosCliente.getRua());
+            query.setParameter("p_numero", dadosCliente.getNumero());
+            query.setParameter("p_complemento", dadosCliente.getComplemento());
+            query.setParameter("p_bairro", dadosCliente.getBairro());
+            query.setParameter("p_cidade", dadosCliente.getCidade());
+            query.setParameter("p_uf", dadosCliente.getUf());
+            query.setParameter("p_cep", dadosCliente.getCep());
 
             query.execute();
 
-            List<DadosClienteDto> resultadoConsulta = consultarClienteEndereco(cpfCnpj, email);
+            List<DadosClienteDto> resultadoConsulta = consultarClienteEndereco(
+                    dadosCliente.getCpfCnpj(),
+                    dadosCliente.getEmail());
+
             DadosClienteDto clienteInserido = resultadoConsulta.isEmpty() ? null : resultadoConsulta.get(0);
 
             if (clienteInserido != null) {
